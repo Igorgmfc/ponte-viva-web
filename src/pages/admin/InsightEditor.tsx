@@ -72,7 +72,7 @@ const InsightEditor = () => {
         updated_at: new Date().toISOString(),
         ...(formData.status === 'published' && !isEditing ? {
           published_at: new Date().toISOString()
-        })
+        } : {})
       }
 
       if (isEditing && id) {
