@@ -1,24 +1,34 @@
 # Dockerfile para hospedagem em VPS com Coolify
-FROM node:18-alpine
 
+# Estágio 1: Build
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copiar arquivos de dependências
+# Copiar arquivos de dependências e instalar TUDO (dev também)
 COPY package*.json ./
+RUN npm install
 
-# Instalar dependências
-RUN npm ci --only=production
-
-# Copiar código fonte
+# Copiar o restante do código fonte
 COPY . .
 
-# Build da aplicação
+# Construir a aplicação (agora o 'vite' existe aqui)
 RUN npm run build
 
-# Instalar servidor web estático
+# Estágio 2: Produção
+FROM node:18-alpine
+WORKDIR /app
+
+# Copiar apenas os arquivos de dependências de produção
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Instalar o servidor web estático
 RUN npm install -g serve
 
-# Expor porta
+# Copiar os arquivos construídos do estágio anterior
+COPY --from=builder /app/dist ./dist
+
+# Expor a porta
 EXPOSE 3000
 
 # Comando para iniciar o servidor
