@@ -7,7 +7,20 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { supabase, BlogPost } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
+
+interface BlogPost {
+  id: string
+  title: string
+  summary: string
+  content: string
+  cover_image?: string
+  status: 'draft' | 'published'
+  author_id: string
+  created_at: string
+  updated_at: string
+  published_at?: string
+}
 import { useNavigate, useParams } from 'react-router-dom'
 import { Save, Eye, ArrowLeft } from 'lucide-react'
 
@@ -48,7 +61,7 @@ const InsightEditor = () => {
         summary: data.summary,
         content: data.content,
         cover_image: data.cover_image || '',
-        status: data.status
+        status: data.status as 'draft' | 'published'
       })
     } catch (error) {
       console.error('Erro ao buscar post:', error)

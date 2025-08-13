@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase } from '@/integrations/supabase/client'
 
 // API para o site público consumir
 export const publicAPI = {

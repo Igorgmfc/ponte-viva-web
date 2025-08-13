@@ -7,7 +7,19 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { supabase, Contact } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
+
+interface Contact {
+  id: string
+  name: string
+  email: string
+  organization?: string
+  message: string
+  status: 'novo' | 'contatado' | 'em_negociacao' | 'arquivado'
+  notes?: string
+  created_at: string
+  updated_at: string
+}
 import { 
   Mail, 
   Calendar,
@@ -55,7 +67,7 @@ const AdminContacts = () => {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      setContacts(data || [])
+      setContacts((data as Contact[]) || [])
     } catch (error) {
       console.error('Erro ao buscar contatos:', error)
     } finally {

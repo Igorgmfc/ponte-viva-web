@@ -1,6 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { supabase, User } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
 import { Session } from '@supabase/supabase-js'
+
+interface User {
+  id: string
+  email: string
+  name: string
+  role: 'admin' | 'editor'
+  created_at: string
+  updated_at: string
+}
 
 interface AuthContextType {
   user: User | null
@@ -63,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single()
 
       if (error) throw error
-      setUser(data)
+      setUser(data as User)
     } catch (error) {
       console.error('Erro ao buscar perfil do usuário:', error)
     } finally {

@@ -4,7 +4,20 @@ import AdminLayout from '@/components/admin/Layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { supabase, BlogPost } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
+
+interface BlogPost {
+  id: string
+  title: string
+  summary: string
+  content: string
+  cover_image?: string
+  status: 'draft' | 'published'
+  author_id: string
+  created_at: string
+  updated_at: string
+  published_at?: string
+}
 import { Link } from 'react-router-dom'
 import { 
   Plus, 
@@ -37,7 +50,7 @@ const AdminInsights = () => {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      setPosts(data || [])
+      setPosts((data as BlogPost[]) || [])
     } catch (error) {
       console.error('Erro ao buscar posts:', error)
     } finally {
