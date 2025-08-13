@@ -1,35 +1,39 @@
-# Dockerfile para hospedagem em VPS com Coolify
-
-# Estágio 1: Build
+# =================================================================
+# Estágio 1: O Construtor (Builder)
+# Aqui nós instalamos tudo e construímos o site.
+# =================================================================
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copiar arquivos de dependências e instalar TUDO (dev também)
-COPY package*.json ./
+# Copia a planta. Se o lockfile não existir, não tem problema.
+COPY package.json package-lock.json* ./
+
+# 'npm install' é flexível. Ele vai criar o lockfile se não existir.
 RUN npm install
 
-# Copiar o restante do código fonte
+# Copia o resto do código fonte.
 COPY . .
 
-# Construir a aplicação (agora o 'vite' existe aqui)
+# Constrói a versão final do site na pasta /app/dist.
 RUN npm run build
 
-# Estágio 2: Produção
+
+# =================================================================
+# Estágio 2: O Entregador (Server)
+# Este é um contêiner limpo que só serve o site pronto.
+# =================================================================
 FROM node:18-alpine
 WORKDIR /app
 
-# Copiar apenas os arquivos de dependências de produção
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Instalar o servidor web estático
+# Instala APENAS a ferramenta que precisamos: o servidor 'serve'.
 RUN npm install -g serve
 
-# Copiar os arquivos construídos do estágio anterior
+# Copia o site pronto (a pasta 'dist') do estágio do Construtor.
 COPY --from=builder /app/dist ./dist
 
-# Expor a porta
+# Expõe a porta que o servidor vai usar.
 EXPOSE 3000
 
-# Comando para iniciar o servidor
+# Comando final para iniciar o servidor.
+# A flag '-s' é crucial para que o roteamento de páginas como /admin funcione.
 CMD ["serve", "-s", "dist", "-l", "3000"]
