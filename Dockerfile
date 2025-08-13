@@ -1,24 +1,35 @@
-# Estágio 1: Build da Aplicação React
+# Dockerfile para hospedagem em VPS com Coolify
+
+# Estágio 1: Build
 FROM node:18-alpine AS builder
 WORKDIR /app
 
+# Copiar arquivos de dependências e instalar TUDO (dev também)
 COPY package*.json ./
 RUN npm install
 
+# Copiar o restante do código fonte
 COPY . .
+
+# Construir a aplicação (agora o 'vite' existe aqui)
 RUN npm run build
 
-# Estágio 2: Servidor de Produção com Nginx
-FROM nginx:alpine
+# Estágio 2: Produção
+FROM node:18-alpine
+WORKDIR /app
 
-# Copia os arquivos construídos do estágio anterior para a pasta do Nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copiar apenas os arquivos de dependências de produção
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Copia nosso arquivo de configuração customizado para dentro do Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Instalar o servidor web estático
+RUN npm install -g serve
 
-# Expõe a porta 80 (padrão do Nginx)
-EXPOSE 80
+# Copiar os arquivos construídos do estágio anterior
+COPY --from=builder /app/dist ./dist
 
-# Comando para iniciar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Expor a porta
+EXPOSE 3000
+
+# Comando para iniciar o servidor
+CMD ["serve", "-s", "dist", "-l", "3000"]
