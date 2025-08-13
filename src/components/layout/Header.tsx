@@ -1,12 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { useState } from "react";
 
 const Header = () => {
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  const navItems = [
+    { path: "/filosofia", label: "Filosofia" },
+    { path: "/jornadas", label: "Jornadas" },
+    { path: "/estudo-de-caso", label: "Estudo de Caso" },
+    { path: "/insights", label: "Insights" },
+    { path: "/contato", label: "Contato" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -19,52 +31,64 @@ const Header = () => {
           />
         </Link>
 
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link
-            to="/filosofia"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive("/filosofia") ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Filosofia
-          </Link>
-          <Link
-            to="/jornadas"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive("/jornadas") ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Jornadas
-          </Link>
-          <Link
-            to="/estudo-de-caso"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive("/estudo-de-caso") ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Estudo de Caso
-          </Link>
-          <Link
-            to="/insights"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive("/insights") ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Insights
-          </Link>
-          <Link
-            to="/contato"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive("/contato") ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            Contato
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive(item.path) ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        <Button asChild className="bg-secondary hover:bg-secondary-dark text-secondary-foreground">
+        {/* Desktop CTA */}
+        <Button asChild className="hidden md:flex bg-secondary hover:bg-secondary-dark text-secondary-foreground">
           <Link to="/contato">Agende uma Conversa</Link>
         </Button>
+
+        {/* Mobile Menu */}
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              aria-label="Menu"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <nav className="flex flex-col space-y-4 mt-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-lg font-medium transition-colors hover:text-primary px-2 py-3 rounded-md ${
+                    isActive(item.path) 
+                      ? "text-primary bg-primary/10" 
+                      : "text-muted-foreground hover:bg-muted/50"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="pt-4 border-t">
+                <Button asChild className="w-full bg-secondary hover:bg-secondary-dark text-secondary-foreground">
+                  <Link to="/contato" onClick={() => setIsOpen(false)}>
+                    Agende uma Conversa
+                  </Link>
+                </Button>
+              </div>
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
