@@ -4,8 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { handleContactSubmit } from "@/lib/api";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Contact = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage(null);
+
+    const formData = new FormData(e.currentTarget);
+    const result = await handleContactSubmit(formData);
+
+    if (result.success) {
+      setMessage({ type: 'success', text: 'Mensagem enviada com sucesso! Entraremos em contato em breve.' });
+      (e.target as HTMLFormElement).reset();
+    } else {
+      setMessage({ type: 'error', text: result.error || 'Erro ao enviar mensagem. Tente novamente.' });
+    }
+
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -20,25 +44,36 @@ const Contact = () => {
             entendermos seu momento e explorarmos se nossa jornada faz sentido para você.
           </p>
           
-          <form className="space-y-6">
+          {message && (
+            <Alert variant={message.type === 'error' ? 'destructive' : 'default'} className="mb-6">
+              <AlertDescription>{message.text}</AlertDescription>
+            </Alert>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Label htmlFor="name">Seu nome</Label>
-              <Input id="name" type="text" />
+              <Input id="name" name="name" type="text" required />
             </div>
             <div>
               <Label htmlFor="email">Seu e-mail</Label>
-              <Input id="email" type="email" />
+              <Input id="email" name="email" type="email" required />
             </div>
             <div>
               <Label htmlFor="organization">Nome da sua organização</Label>
-              <Input id="organization" type="text" />
+              <Input id="organization" name="organization" type="text" />
             </div>
             <div>
               <Label htmlFor="message">Como podemos ajudar?</Label>
-              <Textarea id="message" rows={5} />
+              <Textarea id="message" name="message" rows={5} required />
             </div>
-            <Button type="submit" size="lg" className="w-full bg-secondary hover:bg-secondary-dark">
-              Enviar Mensagem
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full bg-secondary hover:bg-secondary-dark"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Enviando...' : 'Enviar Mensagem'}
             </Button>
           </form>
           
