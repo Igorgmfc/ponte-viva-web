@@ -37,22 +37,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Verificar sessão atual
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      if (session?.user) {
-        fetchUserProfile(session.user.id)
-      } else {
-        setLoading(false)
-      }
-    })
-
-    // Escutar mudanças na autenticação
+    // Configurar listener primeiro para capturar todos os eventos
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        console.log('Auth state change:', event, session?.user?.id)
         setSession(session)
+        
         if (session?.user) {
-          await fetchUserProfile(session.user.id)
+          // Usar setTimeout para evitar deadlocks do Supabase
+          setTimeout(() => {
+            fetchUserProfile(session.user.id)
+          }, 0)
         } else {
           setUser(null)
           setLoading(false)
@@ -60,18 +55,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     )
 
+    // Verificar sessão existente
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.id)
+      setSession(session)
+      if (session?.user) {
+        setTimeout(() => {
+          fetchUserProfile(session.user.id)
+        }, 0)
+      } else {
+        setLoading(false)
+      }
+    })
+
     return () => subscription.unsubscribe()
   }, [])
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log('Tentando buscar perfil para userId:', userId)
       const { data, error } = await supabase
         .from('admin_users')
         .select('*')
         .eq('id', userId)
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Erro ao buscar perfil do usuário:', error)
+        throw error
+      }
+      console.log('Perfil encontrado:', data)
       setUser(data as User)
     } catch (error) {
       console.error('Erro ao buscar perfil do usuário:', error)
