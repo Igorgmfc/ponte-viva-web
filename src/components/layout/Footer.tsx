@@ -1,16 +1,10 @@
 import { Link } from "react-router-dom";
-
 const Footer = () => {
-  return (
-    <footer className="bg-primary text-primary-foreground">
+  return <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <img 
-              src="/lovable-uploads/d2e1c761-fe82-4e01-afc1-2d1bf7c0b6b1.png" 
-              alt="Estratégia Viva" 
-              className="h-12 w-auto brightness-0 invert"
-            />
+            <img src="/lovable-uploads/d2e1c761-fe82-4e01-afc1-2d1bf7c0b6b1.png" alt="Estratégia Viva" className="h-12 w-auto brightness-0 invert" />
             <p className="text-sm text-primary-foreground/80">
               Arquitetamos ecossistemas organizacionais vivos, prósperos e regenerativos.
             </p>
@@ -77,11 +71,9 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/10 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
-          <p>&copy; 2024 Estratégia Viva. Todos os direitos reservados.</p>
+          <p>© 2025 Estratégia Viva. Todos os direitos reservados.</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
