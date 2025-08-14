@@ -11,7 +11,7 @@ RUN apk add --no-cache curl
 # Copia a planta. Se o lockfile não existir, não tem problema.
 COPY package.json package-lock.json* ./
 
-# 'npm install' é flexível. Ele vai criar o lockfile se não existir.
+# 'npm install\' é flexível. Ele vai criar o lockfile se não existir.
 RUN npm ci --only=production
 
 # Copia o resto do código fonte.
@@ -57,5 +57,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000 || exit 1
 
 # Comando final para iniciar o servidor.
-# A flag '-s' é crucial para que o roteamento de páginas como /admin funcione.
+# A flag '-s\' é crucial para que o roteamento de páginas como /admin funcione.
 CMD ["serve", "-s", "dist", "-l", "3000"]
