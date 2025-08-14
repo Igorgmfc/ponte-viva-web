@@ -62,9 +62,14 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-primary-foreground/80">
               <li>contato@estrategiaviva.com.br</li>
               <li>
-                <Link to="/contato" className="hover:text-primary-foreground transition-colors">
+                <a 
+                  href="https://wa.me/5521990519733?text=Olá!%20Gostaria%20de%20agendar%20uma%20conversa%20sobre%20a%20Estratégia%20Viva." 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground transition-colors"
+                >
                   Agende uma Conversa
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

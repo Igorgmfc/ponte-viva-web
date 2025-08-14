@@ -48,7 +48,9 @@ const Header = () => {
 
         {/* Desktop CTA */}
         <Button asChild className="hidden md:flex bg-secondary hover:bg-secondary-dark text-secondary-foreground">
-          <Link to="/contato">Agende uma Conversa</Link>
+          <a href="https://wa.me/5521990519733?text=Olá!%20Gostaria%20de%20agendar%20uma%20conversa%20sobre%20a%20Estratégia%20Viva." target="_blank" rel="noopener noreferrer">
+            Agende uma Conversa
+          </a>
         </Button>
 
         {/* Mobile Menu */}
@@ -81,9 +83,14 @@ const Header = () => {
               ))}
               <div className="pt-4 border-t">
                 <Button asChild className="w-full bg-secondary hover:bg-secondary-dark text-secondary-foreground">
-                  <Link to="/contato" onClick={() => setIsOpen(false)}>
+                  <a 
+                    href="https://wa.me/5521990519733?text=Olá!%20Gostaria%20de%20agendar%20uma%20conversa%20sobre%20a%20Estratégia%20Viva." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                  >
                     Agende uma Conversa
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </nav>
