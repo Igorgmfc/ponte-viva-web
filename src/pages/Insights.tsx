@@ -1,192 +1,239 @@
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import { SEOHead } from "@/components/SEOHead";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, User, ArrowRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
-interface BlogPost {
+interface Insight {
   id: string;
   title: string;
+  slug: string;
   summary: string;
+  cover_image: string | null;
+  author: string;
   published_at: string;
-  author_id: string;
-  cover_image?: string;
-  admin_users?: {
-    name: string;
-  };
+  category: string | null;
+  tags: string[] | null;
 }
 
-export default function Insights() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+const Insights = () => {
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [filteredInsights, setFilteredInsights] = useState<Insight[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchPublishedPosts();
+    fetchInsights();
   }, []);
 
-  const fetchPublishedPosts = async () => {
+  useEffect(() => {
+    filterInsights();
+  }, [insights, searchTerm, selectedCategory]);
+
+  const fetchInsights = async () => {
     try {
       const { data, error } = await supabase
-        .from('blog_posts')
-        .select(`
-          id,
-          title,
-          summary,
-          published_at,
-          author_id,
-          cover_image,
-          admin_users (
-            name
-          )
-        `)
+        .from('insights')
+        .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
 
       if (error) {
-        console.error('Erro ao buscar posts:', error);
+        console.error('Error fetching insights:', error);
         return;
       }
 
-      setPosts(data || []);
+      setInsights(data || []);
     } catch (error) {
-      console.error('Erro ao buscar posts:', error);
+      console.error('Error fetching insights:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const createSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
+  const filterInsights = () => {
+    let filtered = insights;
+
+    if (searchTerm) {
+      filtered = filtered.filter(insight =>
+        insight.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        insight.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        insight.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
+    if (selectedCategory) {
+      filtered = filtered.filter(insight => insight.category === selectedCategory);
+    }
+
+    setFilteredInsights(filtered);
   };
 
+  const categories = Array.from(new Set(insights.map(insight => insight.category).filter(Boolean)));
+
   return (
-    <div className="min-h-screen">
-      <SEOHead 
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/80">
+      <SEOHead
         title="Insights - Estratégia Viva"
-        description="Descobrimentos e reflexões sobre transformação organizacional regenerativa, liderança consciente e desenvolvimento de ecossistemas prósperos."
+        description="Descubra insights valiosos sobre transformação organizacional, liderança estratégica e cultivo de estratégias vivas e autênticas."
         url="https://estrategiaviva.com.br/insights"
       />
       
       <Header />
       
-      <main className="pt-20">
-        <section className="py-16 bg-gradient-to-r from-primary/5 to-secondary/5">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Insights para Transformação
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Descobrimentos e reflexões sobre como criar organizações que regeneram 
-                pessoas, comunidades e ecossistemas.
-              </p>
-            </div>
-          </div>
-        </section>
+      <main className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold text-primary mb-6">
+            Insights Estratégicos
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Reflexões, análises e insights sobre transformação organizacional, 
+            liderança estratégica e o cultivo de estratégias vivas.
+          </p>
+        </div>
 
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            {loading ? (
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Card key={i} className="animate-pulse">
-                    <div className="h-48 bg-muted rounded-t-lg"></div>
-                    <CardHeader>
-                      <div className="h-4 bg-muted rounded w-3/4"></div>
-                      <div className="h-3 bg-muted rounded w-1/2"></div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="h-3 bg-muted rounded"></div>
-                        <div className="h-3 bg-muted rounded"></div>
-                        <div className="h-3 bg-muted rounded w-2/3"></div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : posts.length === 0 ? (
-              <div className="text-center py-16">
-                <h2 className="text-2xl font-bold mb-4">Nenhum insight disponível</h2>
-                <p className="text-muted-foreground">
-                  Novos insights serão publicados em breve.
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post) => (
-                  <Card key={post.id} className="group hover:shadow-lg transition-shadow">
-                    {post.cover_image && (
-                      <div className="overflow-hidden rounded-t-lg">
-                        <img 
-                          src={post.cover_image} 
-                          alt={post.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    )}
-                    
-                    <CardHeader>
-                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-                        {post.title}
-                      </CardTitle>
-                      
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        {post.admin_users?.name && (
-                          <div className="flex items-center gap-1">
-                            <User className="w-4 h-4" />
-                            {post.admin_users.name}
-                          </div>
-                        )}
-                        
-                        {post.published_at && (
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {format(new Date(post.published_at), "dd 'de' MMM, yyyy", { 
-                              locale: ptBR 
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    </CardHeader>
-                    
-                    <CardContent>
-                      <p className="text-muted-foreground line-clamp-3 mb-4">
-                        {post.summary}
-                      </p>
-                      
-                      <Link 
-                        to={`/insights/${createSlug(post.title)}`}
-                        state={{ postId: post.id }}
-                        className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
-                      >
-                        Ler mais
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+        {/* Search and Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Buscar insights..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Badge
+              variant={selectedCategory === null ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSelectedCategory(null)}
+            >
+              Todos
+            </Badge>
+            {categories.map((category) => (
+              <Badge
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Carregando insights...</p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && filteredInsights.length === 0 && (
+          <div className="text-center py-12">
+            <h3 className="text-2xl font-heading font-semibold text-primary mb-4">
+              {searchTerm || selectedCategory ? 'Nenhum insight encontrado' : 'Em breve, novos insights'}
+            </h3>
+            <p className="text-muted-foreground mb-6">
+              {searchTerm || selectedCategory 
+                ? 'Tente ajustar sua busca ou filtros para encontrar o que procura.'
+                : 'Estamos preparando conteúdos valiosos sobre transformação organizacional e estratégia viva.'
+              }
+            </p>
+            {(searchTerm || selectedCategory) && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory(null);
+                }}
+                className="text-secondary hover:text-secondary/80 font-medium"
+              >
+                Limpar filtros
+              </button>
             )}
           </div>
-        </section>
+        )}
+
+        {/* Insights Grid */}
+        {!loading && filteredInsights.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredInsights.map((insight) => (
+              <Card key={insight.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src={insight.cover_image || '/placeholder.svg'}
+                    alt={insight.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <CardContent className="p-6">
+                  {insight.category && (
+                    <Badge variant="secondary" className="mb-3">
+                      {insight.category}
+                    </Badge>
+                  )}
+                  
+                  <h3 className="text-xl font-heading font-semibold text-primary mb-3 line-clamp-2">
+                    {insight.title}
+                  </h3>
+                  
+                  <p className="text-muted-foreground mb-4 line-clamp-3">
+                    {insight.summary}
+                  </p>
+                  
+                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span>{insight.author}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        {format(new Date(insight.published_at), "dd MMM yyyy", { locale: ptBR })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {insight.tags && insight.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {insight.tags.slice(0, 3).map((tag, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <Link
+                    to={`/insights/${insight.slug}`}
+                    className="inline-flex items-center gap-2 text-secondary hover:text-secondary/80 font-medium group"
+                  >
+                    Ler mais
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </main>
       
       <Footer />
     </div>
   );
-}
+};
+
+export default Insights;

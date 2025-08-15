@@ -10,9 +10,13 @@ import { defaultSEO } from "@/utils/seo";
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead data={defaultSEO} />
+      <SEOHead
+        title="Estratégia Viva - Transformação Organizacional Autêntica"
+        description="Consultoria especializada em transformação organizacional através de diagnóstico, arquitetura e cultivo de estratégias vivas e autênticas."
+        url="https://estrategiaviva.com.br"
+      />
       <Header />
-      
+
       <main>
         {/* Hero Section */}
         <section className="py-20 bg-gradient-to-br from-background via-primary/5 to-secondary/10">
@@ -98,7 +102,7 @@ const Index = () => {
               Não oferecemos soluções de prateleira. Guiamos sua organização por uma das três jornadas, 
               cada uma desenhada para um estágio diferente do seu florescimento.
             </p>
-            
+
             <Button asChild size="lg" className="bg-secondary hover:bg-secondary-dark text-secondary-foreground">
               <Link to="/jornadas">Descubra sua Jornada</Link>
             </Button>

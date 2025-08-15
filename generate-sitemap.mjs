@@ -1,95 +1,102 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Load environment variables
+dotenv.config({ path: '.env.production' });
 
-// URLs estáticas do site
-const staticRoutes = [
-  '',
-  '/filosofia',
-  '/jornadas',
-  '/jornadas/diagnostico',
-  '/jornadas/cultivacao',
-  '/jornadas/arquitetura',
-  '/estudo-de-caso',
-  '/insights',
-  '/contato'
-];
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-// Função para criar slug a partir do título
-function createSlug(title) {
-  return title
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
+if (!supabaseUrl || !supabaseKey) {
+  console.error('❌ Supabase credentials not found in environment variables');
+  process.exit(1);
 }
 
-// Mock dos insights para desenvolvimento (em produção, isso viria do Supabase)
-const mockInsights = [
-  {
-    title: "Liderança Regenerativa: O Novo DNA dos Gestores do Futuro",
-    published_at: "2024-01-15"
-  },
-  {
-    title: "Organizações Vivas: Da Máquina ao Organismo",
-    published_at: "2024-01-10"
-  },
-  {
-    title: "Ecossistemas de Inovação: Cultivando Ambientes Regenerativos",
-    published_at: "2024-01-05"
-  }
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Static pages
+const staticPages = [
+  { url: '', priority: '1.0' },
+  { url: 'filosofia', priority: '0.9' },
+  { url: 'jornadas', priority: '0.9' },
+  { url: 'jornadas/diagnostico', priority: '0.8' },
+  { url: 'jornadas/arquitetura', priority: '0.8' },
+  { url: 'jornadas/cultivo', priority: '0.8' },
+  { url: 'estudo-de-caso', priority: '0.8' },
+  { url: 'contato', priority: '0.7' },
+  { url: 'insights', priority: '0.9' }
 ];
 
-function generateSitemap() {
-  const baseUrl = 'https://estrategiaviva.com.br';
-  
-  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+async function generateSitemap() {
+  try {
+    console.log('🚀 Generating sitemap...');
+    
+    // Fetch published insights from Supabase
+    const { data: insights, error } = await supabase
+      .from('insights')
+      .select('id, slug, title, updated_at')
+      .eq('status', 'published')
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      console.error('❌ Error fetching insights:', error);
+      process.exit(1);
+    }
+
+    console.log(`📝 Found ${insights?.length || 0} published insights`);
+
+    const baseUrl = 'https://estrategiaviva.com.br';
+    const currentDate = new Date().toISOString().split('T')[0];
+    
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-  // Adicionar URLs estáticas
-  staticRoutes.forEach(route => {
-    const priority = route === '' ? '1.0' : route === '/insights' ? '0.9' : '0.8';
-    const changefreq = route === '' ? 'weekly' : route === '/insights' ? 'weekly' : 'monthly';
-    
-    sitemap += `
+    // Add static pages
+    staticPages.forEach(page => {
+      sitemap += `
   <url>
-    <loc>${baseUrl}${route}</loc>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <loc>${baseUrl}/${page.url}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${page.priority}</priority>
   </url>`;
-  });
+    });
 
-  // Adicionar URLs dos insights
-  mockInsights.forEach(insight => {
-    const slug = createSlug(insight.title);
-    sitemap += `
+    // Add dynamic insight pages
+    if (insights && insights.length > 0) {
+      insights.forEach(insight => {
+        const lastmod = new Date(insight.updated_at).toISOString().split('T')[0];
+        sitemap += `
   <url>
-    <loc>${baseUrl}/insights/${slug}</loc>
+    <loc>${baseUrl}/insights/${insight.slug}</loc>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <lastmod>${insight.published_at}</lastmod>
+    <priority>0.8</priority>
   </url>`;
-  });
+      });
+    }
 
-  sitemap += `
+    sitemap += `
 </urlset>`;
 
-  // Escrever o arquivo
-  const publicDir = path.join(__dirname, 'public');
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
+    // Write sitemap to public directory
+    const publicDir = path.join(process.cwd(), 'public');
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
+    
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+    
+    console.log('✅ Sitemap generated successfully!');
+    console.log(`📊 Total URLs: ${staticPages.length + (insights?.length || 0)}`);
+    
+  } catch (error) {
+    console.error('❌ Error generating sitemap:', error);
+    process.exit(1);
   }
-  
-  fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
-  console.log('✅ Sitemap gerado com sucesso em public/sitemap.xml');
 }
 
 generateSitemap();

@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
@@ -31,65 +31,65 @@ import AdminEquipe from "./pages/admin/Equipe";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-    <AuthProvider>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/filosofia" element={<Philosophy />} />
-          <Route path="/jornadas" element={<Journeys />} />
-          <Route path="/jornadas/diagnostico" element={<DiagnosisJourney />} />
-          <Route path="/jornadas/arquitetura" element={<ArchitectureJourney />} />
-          <Route path="/jornadas/cultivo" element={<CultivationJourney />} />
-          <Route path="/estudo-de-caso" element={<CaseStudy />} />
-          <Route path="/insights" element={<Insights />} />
-          <Route path="/insights/:id" element={<InsightDetail />} />
-          <Route path="/contato" element={<Contact />} />
-          <Route path="/sitemap.xml" element={<SitemapRoute />} />
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/filosofia" element={<Philosophy />} />
+              <Route path="/jornadas" element={<Journeys />} />
+              <Route path="/jornadas/diagnostico" element={<DiagnosisJourney />} />
+              <Route path="/jornadas/arquitetura" element={<ArchitectureJourney />} />
+              <Route path="/jornadas/cultivo" element={<CultivationJourney />} />
+              <Route path="/estudo-de-caso" element={<CaseStudy />} />
+              <Route path="/insights" element={<Insights />} />
+              <Route path="/insights/:id" element={<InsightDetail />} />
+              <Route path="/contato" element={<Contact />} />
+              <Route path="/sitemap.xml" element={<SitemapRoute />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/insights" element={
-            <ProtectedRoute>
-              <AdminInsights />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/insights/new" element={
-            <ProtectedRoute>
-              <InsightEditor />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/insights/:id/edit" element={
-            <ProtectedRoute>
-              <InsightEditor />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/contacts" element={
-            <ProtectedRoute requireAdmin>
-              <AdminContacts />
-            </ProtectedRoute>
-          } />
-          <Route path="/admin/pages" element={<ProtectedRoute><AdminPages /></ProtectedRoute>} />
-          <Route path="/admin/equipe" element={<ProtectedRoute><AdminEquipe /></ProtectedRoute>} />
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/insights" element={
+                <ProtectedRoute>
+                  <AdminInsights />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/insights/new" element={
+                <ProtectedRoute>
+                  <InsightEditor />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/insights/:id/edit" element={
+                <ProtectedRoute>
+                  <InsightEditor />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/contacts" element={
+                <ProtectedRoute requireAdmin>
+                  <AdminContacts />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/pages" element={<ProtectedRoute><AdminPages /></ProtectedRoute>} />
+              <Route path="/admin/equipe" element={<ProtectedRoute><AdminEquipe /></ProtectedRoute>} />
 
 
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-    </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
