@@ -36,7 +36,7 @@ async function generateSitemap() {
     
     // Fetch published insights from Supabase
     const { data: insights, error } = await supabase
-      .from('insights')
+      .from('blog_posts')
       .select('id, slug, title, updated_at')
       .eq('status', 'published')
       .order('updated_at', { ascending: false });
