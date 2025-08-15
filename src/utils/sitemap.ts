@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 interface SitemapUrl {
   loc: string;
@@ -68,11 +68,13 @@ export const generateSitemap = async (): Promise<string> => {
 
     if (error) {
       console.error('Erro ao buscar insights para sitemap:', error);
+      // Lança o erro para que o catch principal possa lidar com ele
+      throw error;
     }
 
     // Criar URLs dos insights
     const insightUrls: SitemapUrl[] = (insights || []).map(insight => ({
-      loc: `${baseUrl}/insights/${insight.id}`,
+      loc: `${baseUrl}/insights/${insight.id}`, // Idealmente, usar um 'slug' em vez de 'id' no futuro
       lastmod: new Date(insight.updated_at || insight.published_at).toISOString().split('T')[0],
       changefreq: 'monthly' as const,
       priority: 0.7
@@ -95,7 +97,7 @@ ${allUrls.map(url => `  <url>
     return sitemap;
   } catch (error) {
     console.error('Erro ao gerar sitemap:', error);
-    // Retornar sitemap básico em caso de erro
+    // Retornar sitemap básico apenas com páginas estáticas em caso de erro
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticPages.map(url => `  <url>
@@ -105,18 +107,4 @@ ${staticPages.map(url => `  <url>
   </url>`).join('\n')}
 </urlset>`;
   }
-};
-
-// Função para salvar o sitemap durante o build
-export const saveSitemap = async () => {
-  const sitemap = await generateSitemap();
-  
-  // Em ambiente de desenvolvimento, apenas log
-  if (import.meta.env.DEV) {
-    console.log('Sitemap gerado:', sitemap);
-    return;
-  }
-  
-  // Em produção, o sitemap será servido via rota API
-  return sitemap;
 };
