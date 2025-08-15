@@ -22,6 +22,7 @@ interface Insight {
   published_at: string;
   category: string | null;
   tags: string[] | null;
+  author_id: string;
 }
 
 const Insights = () => {
@@ -42,7 +43,7 @@ const Insights = () => {
   const fetchInsights = async () => {
     try {
       const { data, error } = await supabase
-        .from('insights')
+        .from('blog_posts')
         .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false });

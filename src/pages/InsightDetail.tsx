@@ -26,6 +26,7 @@ interface Insight {
   category: string | null;
   tags: string[] | null;
   status: string;
+  author_id: string;
 }
 
 const InsightDetail = () => {
@@ -43,11 +44,11 @@ const InsightDetail = () => {
   const fetchInsight = async () => {
     try {
       const { data, error } = await supabase
-        .from('insights')
+        .from('blog_posts')
         .select('*')
         .eq('slug', slug)
         .eq('status', 'published')
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         console.error('Insight not found:', error);

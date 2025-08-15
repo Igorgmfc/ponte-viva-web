@@ -15,7 +15,11 @@ const Journeys = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead data={seoData} />
+      <SEOHead 
+        title={seoData.title}
+        description={seoData.description} 
+        url={`https://estrategiaviva.com.br${seoData.url}`}
+      />
       <Header />
       
       <main className="py-16">
