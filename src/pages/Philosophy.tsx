@@ -64,7 +64,7 @@ const Philosophy = () => {
                 </li>
                 <li>
                   <strong>A Superficialidade:</strong> As soluções "de prateleira" que tratam 
-                  sintomas e ignoram causas. O "impact washing" que usa a linguagem da mudança 
+                  sintomas e ignoram causas. O "impact washing\" que usa a linguagem da mudança 
                   para manter tudo como está.
                 </li>
                 <li>
