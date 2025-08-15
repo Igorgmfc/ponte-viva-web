@@ -1,0 +1,498 @@
+2025-Aug-15 16:16:18.931154
+Starting deployment of Igorgmfc/ponte-viva-web:main to localhost.
+2025-Aug-15 16:16:19.099690
+Preparing container with helper image: ghcr.io/coollabsio/coolify-helper:1.0.8.
+2025-Aug-15 16:16:19.199297
+[CMD]: docker stop --time=30 bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:19.199297
+Flag --time has been deprecated, use --timeout instead
+2025-Aug-15 16:16:19.203132
+Error response from daemon: No such container: bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:19.305798
+[CMD]: docker rm -f bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:19.305798
+Error response from daemon: No such container: bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:19.466373
+[CMD]: docker run -d --network coolify --name bs0wkwcoocosgsc04wg4k0og --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/coollabsio/coolify-helper:1.0.8
+2025-Aug-15 16:16:19.466373
+c6a273f2592e3f2c22740c74b457ee0fed23543fecfc8ca9eb7950ced9fbc5c5
+2025-Aug-15 16:16:21.588856
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote https://x-access-token:<REDACTED>@github.com/Igorgmfc/ponte-viva-web.git main'
+2025-Aug-15 16:16:21.588856
+69537462ba2dbd4f3c554e0b9beec58751d153ab	refs/heads/main
+2025-Aug-15 16:16:21.870892
+----------------------------------------
+2025-Aug-15 16:16:21.875622
+Importing Igorgmfc/ponte-viva-web:main (commit sha HEAD) to /artifacts/bs0wkwcoocosgsc04wg4k0og.
+2025-Aug-15 16:16:22.045788
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'git clone -b "main" https://x-access-token:<REDACTED>@github.com/Igorgmfc/ponte-viva-web.git /artifacts/bs0wkwcoocosgsc04wg4k0og && cd /artifacts/bs0wkwcoocosgsc04wg4k0og && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive && cd /artifacts/bs0wkwcoocosgsc04wg4k0og && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2025-Aug-15 16:16:22.045788
+Cloning into '/artifacts/bs0wkwcoocosgsc04wg4k0og'...
+2025-Aug-15 16:16:23.566253
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'cd /artifacts/bs0wkwcoocosgsc04wg4k0og && git log -1 69537462ba2dbd4f3c554e0b9beec58751d153ab --pretty=%B'
+2025-Aug-15 16:16:23.566253
+Update generate-sitemap.mjs
+2025-Aug-15 16:16:23.690241
+Image not found (twkoko80ws40ossckwswgwg0:69537462ba2dbd4f3c554e0b9beec58751d153ab). Building new image.
+2025-Aug-15 16:16:24.597405
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'cat /artifacts/bs0wkwcoocosgsc04wg4k0og/Dockerfile'
+2025-Aug-15 16:16:24.597405
+# =================================================================
+2025-Aug-15 16:16:24.597405
+# Estágio 1: O Construtor (Builder)
+2025-Aug-15 16:16:24.597405
+# Aqui nós instalamos tudo e construímos o site.
+2025-Aug-15 16:16:24.597405
+# =================================================================
+2025-Aug-15 16:16:24.597405
+FROM node:20-alpine AS builder
+2025-Aug-15 16:16:24.597405
+WORKDIR /app
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Instalar curl para healthcheck (boa prática, pode manter)
+2025-Aug-15 16:16:24.597405
+RUN apk add --no-cache curl
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Copia a planta.
+2025-Aug-15 16:16:24.597405
+COPY package.json package-lock.json* ./
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Instala TODAS as dependências (peças E ferramentas). ESTA É A CORREÇÃO.
+2025-Aug-15 16:16:24.597405
+RUN npm install
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Copia o resto do código fonte.
+2025-Aug-15 16:16:24.597405
+COPY . .
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Definir variáveis de ambiente para build
+2025-Aug-15 16:16:24.597405
+ARG VITE_SUPABASE_URL
+2025-Aug-15 16:16:24.597405
+ARG VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:16:24.597405
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+2025-Aug-15 16:16:24.597405
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Constrói a versão final do site na pasta /app/dist.
+2025-Aug-15 16:16:24.597405
+RUN npm run build
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# =================================================================
+2025-Aug-15 16:16:24.597405
+# Estágio 2: O Entregador (Server)
+2025-Aug-15 16:16:24.597405
+# Este é um contêiner limpo que só serve o site pronto.
+2025-Aug-15 16:16:24.597405
+# =================================================================
+2025-Aug-15 16:16:24.597405
+FROM node:20-alpine AS production
+2025-Aug-15 16:16:24.597405
+WORKDIR /app
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Instalar curl para healthcheck
+2025-Aug-15 16:16:24.597405
+RUN apk add --no-cache curl
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Instala APENAS a ferramenta que precisamos: o servidor 'serve'.
+2025-Aug-15 16:16:24.597405
+RUN npm install -g serve
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Copia o site pronto (a pasta 'dist') do estágio do Construtor.
+2025-Aug-15 16:16:24.597405
+COPY --from=builder /app/dist ./dist
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Criar usuário não-root para segurança
+2025-Aug-15 16:16:24.597405
+RUN addgroup -g 1001 -S nodejs
+2025-Aug-15 16:16:24.597405
+RUN adduser -S nextjs -u 1001
+2025-Aug-15 16:16:24.597405
+RUN chown -R nextjs:nodejs /app
+2025-Aug-15 16:16:24.597405
+USER nextjs
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Expõe a porta que o servidor vai usar.
+2025-Aug-15 16:16:24.597405
+EXPOSE 3000
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Healthcheck
+2025-Aug-15 16:16:24.597405
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+2025-Aug-15 16:16:24.597405
+CMD curl -f http://localhost:3000 || exit 1
+2025-Aug-15 16:16:24.597405
+2025-Aug-15 16:16:24.597405
+# Comando final para iniciar o servidor.
+2025-Aug-15 16:16:24.597405
+# A flag '-s' é crucial para que o roteamento de páginas como /admin funcione.
+2025-Aug-15 16:16:24.597405
+CMD ["serve", "-s", "dist", "-l", "3000"]
+2025-Aug-15 16:16:24.972616
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'cat /artifacts/bs0wkwcoocosgsc04wg4k0og/Dockerfile'
+2025-Aug-15 16:16:24.972616
+# =================================================================
+2025-Aug-15 16:16:24.972616
+# Estágio 1: O Construtor (Builder)
+2025-Aug-15 16:16:24.972616
+# Aqui nós instalamos tudo e construímos o site.
+2025-Aug-15 16:16:24.972616
+# =================================================================
+2025-Aug-15 16:16:24.972616
+FROM node:20-alpine AS builder
+2025-Aug-15 16:16:24.972616
+WORKDIR /app
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Instalar curl para healthcheck (boa prática, pode manter)
+2025-Aug-15 16:16:24.972616
+RUN apk add --no-cache curl
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Copia a planta.
+2025-Aug-15 16:16:24.972616
+COPY package.json package-lock.json* ./
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Instala TODAS as dependências (peças E ferramentas). ESTA É A CORREÇÃO.
+2025-Aug-15 16:16:24.972616
+RUN npm install
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Copia o resto do código fonte.
+2025-Aug-15 16:16:24.972616
+COPY . .
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Definir variáveis de ambiente para build
+2025-Aug-15 16:16:24.972616
+ARG VITE_SUPABASE_URL
+2025-Aug-15 16:16:24.972616
+ARG VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:16:24.972616
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+2025-Aug-15 16:16:24.972616
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Constrói a versão final do site na pasta /app/dist.
+2025-Aug-15 16:16:24.972616
+RUN npm run build
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# =================================================================
+2025-Aug-15 16:16:24.972616
+# Estágio 2: O Entregador (Server)
+2025-Aug-15 16:16:24.972616
+# Este é um contêiner limpo que só serve o site pronto.
+2025-Aug-15 16:16:24.972616
+# =================================================================
+2025-Aug-15 16:16:24.972616
+FROM node:20-alpine AS production
+2025-Aug-15 16:16:24.972616
+WORKDIR /app
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Instalar curl para healthcheck
+2025-Aug-15 16:16:24.972616
+RUN apk add --no-cache curl
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Instala APENAS a ferramenta que precisamos: o servidor 'serve'.
+2025-Aug-15 16:16:24.972616
+RUN npm install -g serve
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Copia o site pronto (a pasta 'dist') do estágio do Construtor.
+2025-Aug-15 16:16:24.972616
+COPY --from=builder /app/dist ./dist
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Criar usuário não-root para segurança
+2025-Aug-15 16:16:24.972616
+RUN addgroup -g 1001 -S nodejs
+2025-Aug-15 16:16:24.972616
+RUN adduser -S nextjs -u 1001
+2025-Aug-15 16:16:24.972616
+RUN chown -R nextjs:nodejs /app
+2025-Aug-15 16:16:24.972616
+USER nextjs
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Expõe a porta que o servidor vai usar.
+2025-Aug-15 16:16:24.972616
+EXPOSE 3000
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Healthcheck
+2025-Aug-15 16:16:24.972616
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+2025-Aug-15 16:16:24.972616
+CMD curl -f http://localhost:3000 || exit 1
+2025-Aug-15 16:16:24.972616
+2025-Aug-15 16:16:24.972616
+# Comando final para iniciar o servidor.
+2025-Aug-15 16:16:24.972616
+# A flag '-s' é crucial para que o roteamento de páginas como /admin funcione.
+2025-Aug-15 16:16:24.972616
+CMD ["serve", "-s", "dist", "-l", "3000"]
+2025-Aug-15 16:16:25.170603
+----------------------------------------
+2025-Aug-15 16:16:25.175866
+Building docker image started.
+2025-Aug-15 16:16:25.180469
+To check the current progress, click on Show Debug Logs.
+2025-Aug-15 16:16:25.561512
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'cat /artifacts/build.sh'
+2025-Aug-15 16:16:25.561512
+docker build  --add-host coolify:10.0.1.5 --add-host coolify-db:10.0.1.4 --add-host coolify-realtime:10.0.1.3 --add-host coolify-redis:10.0.1.2 --add-host usow4kggokok0cgc0cgc00sc:10.0.1.7 --network host -f /artifacts/bs0wkwcoocosgsc04wg4k0og/Dockerfile --build-arg SOURCE_COMMIT='69537462ba2dbd4f3c554e0b9beec58751d153ab' --build-arg 'COOLIFY_URL=https://estrategiaviva.com.br' --build-arg 'COOLIFY_FQDN=estrategiaviva.com.br' --build-arg 'COOLIFY_BRANCH=main' --build-arg 'COOLIFY_RESOURCE_UUID=twkoko80ws40ossckwswgwg0' --build-arg 'COOLIFY_CONTAINER_NAME=twkoko80ws40ossckwswgwg0-161618093615' --progress plain -t twkoko80ws40ossckwswgwg0:69537462ba2dbd4f3c554e0b9beec58751d153ab /artifacts/bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:26.275677
+[CMD]: docker exec bs0wkwcoocosgsc04wg4k0og bash -c 'bash /artifacts/build.sh'
+2025-Aug-15 16:16:26.275677
+#0 building with "default" instance using docker driver
+2025-Aug-15 16:16:26.275677
+2025-Aug-15 16:16:26.275677
+#1 [internal] load build definition from Dockerfile
+2025-Aug-15 16:16:26.275677
+#1 transferring dockerfile: 1.90kB done
+2025-Aug-15 16:16:26.275677
+#1 DONE 0.0s
+2025-Aug-15 16:16:26.275677
+2025-Aug-15 16:16:26.275677
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+2025-Aug-15 16:16:26.588698
+#2 DONE 0.5s
+2025-Aug-15 16:16:26.720581
+#3 [internal] load .dockerignore
+2025-Aug-15 16:16:26.720581
+#3 transferring context: 731B done
+2025-Aug-15 16:16:26.720581
+#3 DONE 0.0s
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#4 [builder 1/7] FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-Aug-15 16:16:26.720581
+#4 DONE 0.0s
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#5 [internal] load build context
+2025-Aug-15 16:16:26.720581
+#5 transferring context: 984.05kB 0.0s done
+2025-Aug-15 16:16:26.720581
+#5 DONE 0.0s
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#6 [builder 2/7] WORKDIR /app
+2025-Aug-15 16:16:26.720581
+#6 CACHED
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#7 [builder 3/7] RUN apk add --no-cache curl
+2025-Aug-15 16:16:26.720581
+#7 CACHED
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#8 [builder 4/7] COPY package.json package-lock.json* ./
+2025-Aug-15 16:16:26.720581
+#8 CACHED
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#9 [builder 5/7] RUN npm install
+2025-Aug-15 16:16:26.720581
+#9 CACHED
+2025-Aug-15 16:16:26.720581
+2025-Aug-15 16:16:26.720581
+#10 [builder 6/7] COPY . .
+2025-Aug-15 16:16:26.720581
+#10 DONE 0.1s
+2025-Aug-15 16:16:26.873580
+#11 [builder 7/7] RUN npm run build
+2025-Aug-15 16:16:26.971757
+#11 0.250
+2025-Aug-15 16:16:26.971757
+#11 0.250 > vite_react_shadcn_ts@0.0.0 build
+2025-Aug-15 16:16:26.971757
+#11 0.250 > node ./generate-sitemap.mjs && vite build
+2025-Aug-15 16:16:26.971757
+#11 0.250
+2025-Aug-15 16:16:27.161108
+#11 0.440 Erro: Variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY são necessárias.
+2025-Aug-15 16:16:27.274387
+#11 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2025-Aug-15 16:16:27.274387
+------
+2025-Aug-15 16:16:27.274387
+> [builder 7/7] RUN npm run build:
+2025-Aug-15 16:16:27.274387
+0.250
+2025-Aug-15 16:16:27.274387
+0.250 > vite_react_shadcn_ts@0.0.0 build
+2025-Aug-15 16:16:27.274387
+0.250 > node ./generate-sitemap.mjs && vite build
+2025-Aug-15 16:16:27.274387
+0.250
+2025-Aug-15 16:16:27.274387
+0.440 Erro: Variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY são necessárias.
+2025-Aug-15 16:16:27.274387
+------
+2025-Aug-15 16:16:27.278224
+Dockerfile:27
+2025-Aug-15 16:16:27.278224
+--------------------
+2025-Aug-15 16:16:27.278224
+25 |
+2025-Aug-15 16:16:27.278224
+26 |     # Constrói a versão final do site na pasta /app/dist.
+2025-Aug-15 16:16:27.278224
+27 | >>> RUN npm run build
+2025-Aug-15 16:16:27.278224
+28 |
+2025-Aug-15 16:16:27.278224
+29 |
+2025-Aug-15 16:16:27.278224
+--------------------
+2025-Aug-15 16:16:27.278224
+ERROR: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2025-Aug-15 16:16:27.282596
+exit status 1
+2025-Aug-15 16:16:27.340450
+Oops something is not okay, are you okay? 😢
+2025-Aug-15 16:16:27.344584
+#0 building with "default" instance using docker driver
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#1 [internal] load build definition from Dockerfile
+2025-Aug-15 16:16:27.344584
+#1 transferring dockerfile: 1.90kB done
+2025-Aug-15 16:16:27.344584
+#1 DONE 0.0s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#2 [internal] load metadata for docker.io/library/node:20-alpine
+2025-Aug-15 16:16:27.344584
+#2 DONE 0.5s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#3 [internal] load .dockerignore
+2025-Aug-15 16:16:27.344584
+#3 transferring context: 731B done
+2025-Aug-15 16:16:27.344584
+#3 DONE 0.0s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#4 [builder 1/7] FROM docker.io/library/node:20-alpine@sha256:df02558528d3d3d0d621f112e232611aecfee7cbc654f6b375765f72bb262799
+2025-Aug-15 16:16:27.344584
+#4 DONE 0.0s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#5 [internal] load build context
+2025-Aug-15 16:16:27.344584
+#5 transferring context: 984.05kB 0.0s done
+2025-Aug-15 16:16:27.344584
+#5 DONE 0.0s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#6 [builder 2/7] WORKDIR /app
+2025-Aug-15 16:16:27.344584
+#6 CACHED
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#7 [builder 3/7] RUN apk add --no-cache curl
+2025-Aug-15 16:16:27.344584
+#7 CACHED
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#8 [builder 4/7] COPY package.json package-lock.json* ./
+2025-Aug-15 16:16:27.344584
+#8 CACHED
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#9 [builder 5/7] RUN npm install
+2025-Aug-15 16:16:27.344584
+#9 CACHED
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#10 [builder 6/7] COPY . .
+2025-Aug-15 16:16:27.344584
+#10 DONE 0.1s
+2025-Aug-15 16:16:27.344584
+2025-Aug-15 16:16:27.344584
+#11 [builder 7/7] RUN npm run build
+2025-Aug-15 16:16:27.344584
+#11 0.250
+2025-Aug-15 16:16:27.344584
+#11 0.250 > vite_react_shadcn_ts@0.0.0 build
+2025-Aug-15 16:16:27.344584
+#11 0.250 > node ./generate-sitemap.mjs && vite build
+2025-Aug-15 16:16:27.344584
+#11 0.250
+2025-Aug-15 16:16:27.344584
+#11 0.440 Erro: Variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY são necessárias.
+2025-Aug-15 16:16:27.344584
+#11 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2025-Aug-15 16:16:27.344584
+------
+2025-Aug-15 16:16:27.344584
+> [builder 7/7] RUN npm run build:
+2025-Aug-15 16:16:27.344584
+0.250
+2025-Aug-15 16:16:27.344584
+0.250 > vite_react_shadcn_ts@0.0.0 build
+2025-Aug-15 16:16:27.344584
+0.250 > node ./generate-sitemap.mjs && vite build
+2025-Aug-15 16:16:27.344584
+0.250
+2025-Aug-15 16:16:27.344584
+0.440 Erro: Variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY são necessárias.
+2025-Aug-15 16:16:27.344584
+------
+2025-Aug-15 16:16:27.344584
+Dockerfile:27
+2025-Aug-15 16:16:27.344584
+--------------------
+2025-Aug-15 16:16:27.344584
+25 |
+2025-Aug-15 16:16:27.344584
+26 |     # Constrói a versão final do site na pasta /app/dist.
+2025-Aug-15 16:16:27.344584
+27 | >>> RUN npm run build
+2025-Aug-15 16:16:27.344584
+28 |
+2025-Aug-15 16:16:27.344584
+29 |
+2025-Aug-15 16:16:27.344584
+--------------------
+2025-Aug-15 16:16:27.344584
+ERROR: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2025-Aug-15 16:16:27.344584
+exit status 1
+2025-Aug-15 16:16:27.348810
+Deployment failed. Removing the new version of your application.
+2025-Aug-15 16:16:27.821030
+Gracefully shutting down build container: bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:27.940522
+[CMD]: docker stop --time=30 bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:27.940522
+Flag --time has been deprecated, use --timeout instead
+2025-Aug-15 16:16:28.115075
+bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:28.241745
+[CMD]: docker rm -f bs0wkwcoocosgsc04wg4k0og
+2025-Aug-15 16:16:28.241745
+Error response from daemon: No such container: bs0wkwcoocosgsc04wg4k0og
