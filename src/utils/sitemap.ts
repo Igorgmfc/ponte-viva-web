@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase.ts';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SitemapUrl {
   loc: string;
