@@ -1,48 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://estrategiaviva.com.br/</loc>
+    <loc>https://estrategiaviva.com.br</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://estrategiaviva.com.br/jornadas</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://estrategiaviva.com.br/jornadas/diagnostico</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://estrategiaviva.com.br/jornadas/arquitetura</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://estrategiaviva.com.br/jornadas/cultivo</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
   <url>
     <loc>https://estrategiaviva.com.br/filosofia</loc>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/jornadas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/jornadas/diagnostico</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/jornadas/cultivacao</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/jornadas/arquitetura</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/estudo-de-caso</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
   <url>
     <loc>https://estrategiaviva.com.br/insights</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
   <url>
     <loc>https://estrategiaviva.com.br/contato</loc>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <lastmod>2025-08-15</lastmod>
   </url>
   <url>
-    <loc>https://estrategiaviva.com.br/caso-de-estudo</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://estrategiaviva.com.br/insights/lideranca-regenerativa-o-novo-dna-dos-gestores-do-futuro</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2024-01-15</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/insights/organizacoes-vivas-da-maquina-ao-organismo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2024-01-10</lastmod>
+  </url>
+  <url>
+    <loc>https://estrategiaviva.com.br/insights/ecossistemas-de-inovacao-cultivando-ambientes-regenerativos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2024-01-05</lastmod>
   </url>
 </urlset>

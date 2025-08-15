@@ -25,6 +25,8 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminInsights from "./pages/admin/Insights";
 import InsightEditor from "./pages/admin/InsightEditor";
 import AdminContacts from "./pages/admin/Contacts";
+import AdminPages from "./pages/admin/Pages";
+import AdminEquipe from "./pages/admin/Equipe";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +50,7 @@ const App = () => (
           <Route path="/insights/:id" element={<InsightDetail />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="/sitemap.xml" element={<SitemapRoute />} />
-          
+
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={
@@ -66,7 +68,7 @@ const App = () => (
               <InsightEditor />
             </ProtectedRoute>
           } />
-          <Route path="/admin/insights/edit/:id" element={
+          <Route path="/admin/insights/:id/edit" element={
             <ProtectedRoute>
               <InsightEditor />
             </ProtectedRoute>
@@ -76,13 +78,16 @@ const App = () => (
               <AdminContacts />
             </ProtectedRoute>
           } />
-          
+          <Route path="/admin/pages" element={<ProtectedRoute><AdminPages /></ProtectedRoute>} />
+          <Route path="/admin/equipe" element={<ProtectedRoute><AdminEquipe /></ProtectedRoute>} />
+
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </TooltipProvider>
     </AuthProvider>
+    </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );

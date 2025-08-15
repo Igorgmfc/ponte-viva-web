@@ -1,40 +1,46 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { SEOData, generateSEOTags } from '@/utils/seo';
+
+import { Helmet } from "react-helmet-async";
 
 interface SEOHeadProps {
-  data: SEOData;
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: string;
 }
 
-const SEOHead: React.FC<SEOHeadProps> = ({ data }) => {
-  const seoTags = generateSEOTags(data);
-
+export const SEOHead = ({
+  title = "Estratégia Viva - Transformação Organizacional Regenerativa",
+  description = "Desenvolvemos líderes e organizações que regeneram pessoas, comunidades e ecossistemas através de metodologias inovadoras de transformação organizacional.",
+  image = "https://estrategiaviva.com.br/lovable-uploads/d2e1c761-fe82-4e01-afc1-2d1bf7c0b6b1.png",
+  url = "https://estrategiaviva.com.br",
+  type = "website"
+}: SEOHeadProps) => {
+  const fullTitle = title.includes("Estratégia Viva") ? title : `${title} | Estratégia Viva`;
+  
   return (
     <Helmet>
-      <title>{seoTags.title}</title>
-      <meta name="description" content={seoTags.description} />
-      <link rel="canonical" href={seoTags.canonical} />
+      <title>{fullTitle}</title>
+      <meta name="description" content={description} />
       
       {/* Open Graph */}
-      <meta property="og:title" content={seoTags.openGraph.title} />
-      <meta property="og:description" content={seoTags.openGraph.description} />
-      <meta property="og:url" content={seoTags.openGraph.url} />
-      <meta property="og:type" content={seoTags.openGraph.type} />
-      <meta property="og:image" content={seoTags.openGraph.image} />
-      <meta property="og:site_name" content={seoTags.openGraph.siteName} />
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={image} />
+      <meta property="og:url" content={url} />
+      <meta property="og:type" content={type} />
+      <meta property="og:site_name" content="Estratégia Viva" />
       
       {/* Twitter */}
-      <meta name="twitter:card" content={seoTags.twitter.card} />
-      <meta name="twitter:title" content={seoTags.twitter.title} />
-      <meta name="twitter:description" content={seoTags.twitter.description} />
-      <meta name="twitter:image" content={seoTags.twitter.image} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={fullTitle} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={image} />
       
-      {/* Additional SEO tags */}
+      {/* Additional SEO */}
       <meta name="robots" content="index, follow" />
       <meta name="author" content="Estratégia Viva" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="canonical" href={url} />
     </Helmet>
   );
 };
-
-export default SEOHead;
