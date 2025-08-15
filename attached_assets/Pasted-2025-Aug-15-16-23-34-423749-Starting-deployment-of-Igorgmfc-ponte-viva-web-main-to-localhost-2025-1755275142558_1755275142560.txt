@@ -1,0 +1,296 @@
+2025-Aug-15 16:23:34.423749
+Starting deployment of Igorgmfc/ponte-viva-web:main to localhost.
+2025-Aug-15 16:23:34.598063
+Preparing container with helper image: ghcr.io/coollabsio/coolify-helper:1.0.8.
+2025-Aug-15 16:23:34.698577
+[CMD]: docker stop --time=30 sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:34.698577
+Flag --time has been deprecated, use --timeout instead
+2025-Aug-15 16:23:34.702185
+Error response from daemon: No such container: sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:34.820166
+[CMD]: docker rm -f sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:34.820166
+Error response from daemon: No such container: sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:34.993206
+[CMD]: docker run -d --network coolify --name sg0kcc88scowg44844swkwkg --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/coollabsio/coolify-helper:1.0.8
+2025-Aug-15 16:23:34.993206
+c7d15dd3a1d33496e3a94528d1b9c06f42e04651b0a3ca1a755a6cc3ea580b93
+2025-Aug-15 16:23:37.109949
+[CMD]: docker exec sg0kcc88scowg44844swkwkg bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote https://x-access-token:<REDACTED>@github.com/Igorgmfc/ponte-viva-web.git main'
+2025-Aug-15 16:23:37.109949
+529ecbe57f4dfca161b5fb18781e30b34a74fe91	refs/heads/main
+2025-Aug-15 16:23:37.435555
+----------------------------------------
+2025-Aug-15 16:23:37.443175
+Importing Igorgmfc/ponte-viva-web:main (commit sha HEAD) to /artifacts/sg0kcc88scowg44844swkwkg.
+2025-Aug-15 16:23:37.598288
+[CMD]: docker exec sg0kcc88scowg44844swkwkg bash -c 'git clone -b "main" https://x-access-token:<REDACTED>@github.com/Igorgmfc/ponte-viva-web.git /artifacts/sg0kcc88scowg44844swkwkg && cd /artifacts/sg0kcc88scowg44844swkwkg && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive && cd /artifacts/sg0kcc88scowg44844swkwkg && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2025-Aug-15 16:23:37.598288
+Cloning into '/artifacts/sg0kcc88scowg44844swkwkg'...
+2025-Aug-15 16:23:38.963178
+[CMD]: docker exec sg0kcc88scowg44844swkwkg bash -c 'cd /artifacts/sg0kcc88scowg44844swkwkg && git log -1 529ecbe57f4dfca161b5fb18781e30b34a74fe91 --pretty=%B'
+2025-Aug-15 16:23:38.963178
+Assistant checkpoint: Fix sitemap generation for successful deployment
+2025-Aug-15 16:23:38.963178
+2025-Aug-15 16:23:38.963178
+Assistant generated file changes:
+2025-Aug-15 16:23:38.963178
+- generate-sitemap.mjs: Remove dependency on environment variables for sitemap generation
+2025-Aug-15 16:23:38.963178
+2025-Aug-15 16:23:38.963178
+---
+2025-Aug-15 16:23:38.963178
+2025-Aug-15 16:23:38.963178
+User prompt:
+2025-Aug-15 16:23:38.963178
+2025-Aug-15 16:23:38.963178
+Estou tentando fazer o deploy, mas tras esse log:
+2025-Aug-15 16:23:38.963178
+2025-Aug-15 16:23:38.963178
+Replit-Commit-Author: Assistant
+2025-Aug-15 16:23:38.963178
+Replit-Commit-Session-Id: 9d172e52-e7be-4eac-ac07-68285a4b946d
+2025-Aug-15 16:23:39.125632
+[CMD]: docker images -q twkoko80ws40ossckwswgwg0:529ecbe57f4dfca161b5fb18781e30b34a74fe91 2>/dev/null
+2025-Aug-15 16:23:39.125632
+bab7a19ed5c4
+2025-Aug-15 16:23:39.144646
+No configuration changed & image found (twkoko80ws40ossckwswgwg0:529ecbe57f4dfca161b5fb18781e30b34a74fe91) with the same Git Commit SHA. Build step skipped.
+2025-Aug-15 16:23:39.874192
+[CMD]: docker exec sg0kcc88scowg44844swkwkg bash -c 'cat /artifacts/sg0kcc88scowg44844swkwkg/Dockerfile'
+2025-Aug-15 16:23:39.874192
+# =================================================================
+2025-Aug-15 16:23:39.874192
+# Estágio 1: O Construtor (Builder)
+2025-Aug-15 16:23:39.874192
+# Aqui nós instalamos tudo e construímos o site.
+2025-Aug-15 16:23:39.874192
+# =================================================================
+2025-Aug-15 16:23:39.874192
+FROM node:20-alpine AS builder
+2025-Aug-15 16:23:39.874192
+WORKDIR /app
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Instalar curl para healthcheck (boa prática, pode manter)
+2025-Aug-15 16:23:39.874192
+RUN apk add --no-cache curl
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Copia a planta.
+2025-Aug-15 16:23:39.874192
+COPY package.json package-lock.json* ./
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Instala TODAS as dependências (peças E ferramentas). ESTA É A CORREÇÃO.
+2025-Aug-15 16:23:39.874192
+RUN npm install
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Copia o resto do código fonte.
+2025-Aug-15 16:23:39.874192
+COPY . .
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Definir variáveis de ambiente para build
+2025-Aug-15 16:23:39.874192
+ARG VITE_SUPABASE_URL
+2025-Aug-15 16:23:39.874192
+ARG VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:23:39.874192
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+2025-Aug-15 16:23:39.874192
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Constrói a versão final do site na pasta /app/dist.
+2025-Aug-15 16:23:39.874192
+RUN npm run build
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# =================================================================
+2025-Aug-15 16:23:39.874192
+# Estágio 2: O Entregador (Server)
+2025-Aug-15 16:23:39.874192
+# Este é um contêiner limpo que só serve o site pronto.
+2025-Aug-15 16:23:39.874192
+# =================================================================
+2025-Aug-15 16:23:39.874192
+FROM node:20-alpine AS production
+2025-Aug-15 16:23:39.874192
+WORKDIR /app
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Instalar curl para healthcheck
+2025-Aug-15 16:23:39.874192
+RUN apk add --no-cache curl
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Instala APENAS a ferramenta que precisamos: o servidor 'serve'.
+2025-Aug-15 16:23:39.874192
+RUN npm install -g serve
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Copia o site pronto (a pasta 'dist') do estágio do Construtor.
+2025-Aug-15 16:23:39.874192
+COPY --from=builder /app/dist ./dist
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Criar usuário não-root para segurança
+2025-Aug-15 16:23:39.874192
+RUN addgroup -g 1001 -S nodejs
+2025-Aug-15 16:23:39.874192
+RUN adduser -S nextjs -u 1001
+2025-Aug-15 16:23:39.874192
+RUN chown -R nextjs:nodejs /app
+2025-Aug-15 16:23:39.874192
+USER nextjs
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Expõe a porta que o servidor vai usar.
+2025-Aug-15 16:23:39.874192
+EXPOSE 3000
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Healthcheck
+2025-Aug-15 16:23:39.874192
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+2025-Aug-15 16:23:39.874192
+CMD curl -f http://localhost:3000 || exit 1
+2025-Aug-15 16:23:39.874192
+2025-Aug-15 16:23:39.874192
+# Comando final para iniciar o servidor.
+2025-Aug-15 16:23:39.874192
+# A flag '-s' é crucial para que o roteamento de páginas como /admin funcione.
+2025-Aug-15 16:23:39.874192
+CMD ["serve", "-s", "dist", "-l", "3000"]
+2025-Aug-15 16:23:40.067740
+----------------------------------------
+2025-Aug-15 16:23:40.073724
+Rolling update started.
+2025-Aug-15 16:23:40.494493
+[CMD]: docker exec sg0kcc88scowg44844swkwkg bash -c 'SOURCE_COMMIT=529ecbe57f4dfca161b5fb18781e30b34a74fe91 COOLIFY_URL=https://estrategiaviva.com.br COOLIFY_FQDN=estrategiaviva.com.br COOLIFY_BRANCH=main  docker compose --project-name twkoko80ws40ossckwswgwg0 --project-directory /artifacts/sg0kcc88scowg44844swkwkg -f /artifacts/sg0kcc88scowg44844swkwkg/docker-compose.yaml up --build -d'
+2025-Aug-15 16:23:40.494493
+time="2025-08-15T16:23:40Z" level=warning msg="Found orphan containers ([twkoko80ws40ossckwswgwg0-162102278596]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+2025-Aug-15 16:23:40.498582
+Container twkoko80ws40ossckwswgwg0-162333862717  Creating
+2025-Aug-15 16:23:40.557503
+twkoko80ws40ossckwswgwg0-162333862717 Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+2025-Aug-15 16:23:40.567233
+Container twkoko80ws40ossckwswgwg0-162333862717  Created
+2025-Aug-15 16:23:40.567233
+Container twkoko80ws40ossckwswgwg0-162333862717  Starting
+2025-Aug-15 16:23:40.782602
+Container twkoko80ws40ossckwswgwg0-162333862717  Started
+2025-Aug-15 16:23:40.810269
+New container started.
+2025-Aug-15 16:23:40.820829
+Custom healthcheck found, skipping default healthcheck.
+2025-Aug-15 16:23:40.832148
+Waiting for healthcheck to pass on the new container.
+2025-Aug-15 16:23:40.843411
+Waiting for the start period (5 seconds) before starting healthcheck.
+2025-Aug-15 16:23:45.957582
+[CMD]: docker inspect --format='{{json .State.Health.Status}}' twkoko80ws40ossckwswgwg0-162333862717
+2025-Aug-15 16:23:45.957582
+"healthy"
+2025-Aug-15 16:23:46.097822
+[CMD]: docker inspect --format='{{json .State.Health.Log}}' twkoko80ws40ossckwswgwg0-162333862717
+2025-Aug-15 16:23:46.097822
+[{"Start":"2025-08-15T16:23:45.78041095Z","End":"2025-08-15T16:23:45.865316081Z","ExitCode":0,"Output":"  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\r  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Estratégia Viva - Arquitetamos Ecossistemas Organizacionais Vivos</title>\n    <meta name=\"description\" content=\"Transformamos organizações em organismos prósperos, resilientes e regenerativos. Consultoria estratégica especializada em ecossistemas vivos organizacionais.\" />\n    <meta name=\"author\" content=\"Estratégia Viva\" />\n    <meta name=\"keywords\" content=\"consultoria estratégica, ecossistemas organizacionais, transformação organizacional, cultura empresarial, estratégia viva\" />\n\n    <meta property=\"og:title\" content=\"Estratégia Viva - Arquitetamos Ecossistemas Organizacionais Vivos\" />\n    <meta property=\"og:description\" content=\"Transformamos organizações em organismos prósperos, resilientes e regenerativos. Consultoria estratégica especializada em ecossistemas vivos organizacionais.\" />\n    \n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap\" rel=\"stylesheet\">\n    <meta property=\"og:type\" content=\"website\" />\n    <meta property=\"og:image\" content=\"https://lovable.dev/opengraph-image-p98pqg.png\" />\n\n    <meta name=\"twitter:card\" content=\"summary_large_image\" />\n    <meta name=\"twitter:site\" content=\"@lovable_dev\" />\n    <meta name=\"twitter:image\" content=\"https://lovable.dev/opengraph-image-p98pqg.png\" />\n    <script type=\"module\" crossorigin src=\"/assets/index-wtr_LOkp.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-D0sln9rE.css\">\n  </head>\n\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n\r100  1841  100  1841    0     0  61338      0 --:--:-- --:--:-- --:--:-- 63482\n"}]
+2025-Aug-15 16:23:46.106109
+Attempt 1 of 3 | Healthcheck status: "healthy"
+2025-Aug-15 16:23:46.118201
+Healthcheck logs:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2025-Aug-15 16:23:46.118201
+Dload  Upload   Total   Spent    Left  Speed
+2025-Aug-15 16:23:46.118201
+0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<!DOCTYPE html>
+2025-Aug-15 16:23:46.118201
+<html lang="en">
+2025-Aug-15 16:23:46.118201
+<head>
+2025-Aug-15 16:23:46.118201
+<meta charset="UTF-8" />
+2025-Aug-15 16:23:46.118201
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+2025-Aug-15 16:23:46.118201
+<title>Estratégia Viva - Arquitetamos Ecossistemas Organizacionais Vivos</title>
+2025-Aug-15 16:23:46.118201
+<meta name="description" content="Transformamos organizações em organismos prósperos, resilientes e regenerativos. Consultoria estratégica especializada em ecossistemas vivos organizacionais." />
+2025-Aug-15 16:23:46.118201
+<meta name="author" content="Estratégia Viva" />
+2025-Aug-15 16:23:46.118201
+<meta name="keywords" content="consultoria estratégica, ecossistemas organizacionais, transformação organizacional, cultura empresarial, estratégia viva" />
+2025-Aug-15 16:23:46.118201
+2025-Aug-15 16:23:46.118201
+<meta property="og:title" content="Estratégia Viva - Arquitetamos Ecossistemas Organizacionais Vivos" />
+2025-Aug-15 16:23:46.118201
+<meta property="og:description" content="Transformamos organizações em organismos prósperos, resilientes e regenerativos. Consultoria estratégica especializada em ecossistemas vivos organizacionais." />
+2025-Aug-15 16:23:46.118201
+2025-Aug-15 16:23:46.118201
+<link rel="preconnect" href="https://fonts.googleapis.com">
+2025-Aug-15 16:23:46.118201
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+2025-Aug-15 16:23:46.118201
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+2025-Aug-15 16:23:46.118201
+<meta property="og:type" content="website" />
+2025-Aug-15 16:23:46.118201
+<meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+2025-Aug-15 16:23:46.118201
+2025-Aug-15 16:23:46.118201
+<meta name="twitter:card" content="summary_large_image" />
+2025-Aug-15 16:23:46.118201
+<meta name="twitter:site" content="@lovable_dev" />
+2025-Aug-15 16:23:46.118201
+<meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+2025-Aug-15 16:23:46.118201
+<script type="module" crossorigin src="/assets/index-wtr_LOkp.js"></script>
+2025-Aug-15 16:23:46.118201
+<link rel="stylesheet" crossorigin href="/assets/index-D0sln9rE.css">
+2025-Aug-15 16:23:46.118201
+</head>
+2025-Aug-15 16:23:46.118201
+2025-Aug-15 16:23:46.118201
+<body>
+2025-Aug-15 16:23:46.118201
+<div id="root"></div>
+2025-Aug-15 16:23:46.118201
+</body>
+2025-Aug-15 16:23:46.118201
+</html>
+2025-Aug-15 16:23:46.118201
+100  1841  100  1841    0     0  61338      0 --:--:-- --:--:-- --:--:-- 63482
+2025-Aug-15 16:23:46.118201
+| Return code: 0
+2025-Aug-15 16:23:46.128731
+New container is healthy.
+2025-Aug-15 16:23:46.131790
+Removing old containers.
+2025-Aug-15 16:23:46.450934
+[CMD]: docker stop --time=30 twkoko80ws40ossckwswgwg0-162102278596
+2025-Aug-15 16:23:46.450934
+Flag --time has been deprecated, use --timeout instead
+2025-Aug-15 16:23:46.753866
+twkoko80ws40ossckwswgwg0-162102278596
+2025-Aug-15 16:23:47.008463
+[CMD]: docker rm -f twkoko80ws40ossckwswgwg0-162102278596
+2025-Aug-15 16:23:47.008463
+twkoko80ws40ossckwswgwg0-162102278596
+2025-Aug-15 16:23:47.014688
+Rolling update completed.
+2025-Aug-15 16:23:47.432750
+Gracefully shutting down build container: sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:47.681102
+[CMD]: docker stop --time=30 sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:47.681102
+Flag --time has been deprecated, use --timeout instead
+2025-Aug-15 16:23:47.893242
+sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:48.147748
+[CMD]: docker rm -f sg0kcc88scowg44844swkwkg
+2025-Aug-15 16:23:48.147748
+Error response from daemon: No such container: sg0kcc88scowg44844swkwkg
