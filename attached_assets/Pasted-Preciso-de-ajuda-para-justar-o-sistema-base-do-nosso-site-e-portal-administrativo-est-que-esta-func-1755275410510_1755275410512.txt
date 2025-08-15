@@ -1,0 +1,43 @@
+Preciso de ajuda para justar o sistema base do nosso site e portal administrativo está que esta funcional. Agora, nosso foco é em refinar a plataforma para atingir dois objetivos críticos: visibilidade pública (SEO) e funcionalidade completa do admin.
+A seguir estão os tickets de trabalho detalhados.
+
+Tarefa Primordial: Indexação e Otimização para Buscadores (SEO)
+Objetivo: Garantir que o estrategiaviva.com.br seja corretamente indexado pelo Google e outros buscadores, e que o conteúdo seja apresentado de forma otimizada para atrair nosso público-alvo.
+Requisitos Técnicos:
+1.	Geração de sitemap.xml:
+o	Implementar uma rotina (que pode ser executada durante o build) para gerar um arquivo sitemap.xml dinamicamente.
+o	O sitemap deve conter todas as páginas públicas do site: Home, Filosofia, Jornadas, Estudo de Caso, Contato, a página principal de Insights e, crucialmente, uma URL para cada Insight individualmente publicado.
+2.	Criação de robots.txt:
+o	Adicionar um arquivo robots.txt na raiz do site.
+o	A regra principal deve ser Disallow: /admin, para garantir que nosso portal administrativo não seja indexado.
+3.	Implementação de Meta Tags Dinâmicas:
+o	O site precisa gerar meta tags essenciais de forma dinâmica para cada página, especialmente para os Insights. Utilize a biblioteca react-helmet-async ou similar para gerenciar os <head> tags.
+o	Para cada página/Insight, as seguintes tags devem ser geradas:
+	<title>: O título do Insight ou da página.
+	<meta name="description" content="...">: O resumo do Insight ou uma descrição da página.
+	Open Graph (para redes sociais): og:title, og:description, og:image (usando a imagem de capa do Insight).
+
+Ajustes e Funcionalidades do Portal Administrativo
+Objetivo: Corrigir rotas quebradas e garantir que todo o conteúdo criado no admin seja corretamente exibido no site público.
+Ticket 1: Exibição dos Insights no Site Público
+•	Problema: Temos 5+ Insights publicados no admin, mas a página estrategiaviva.com.br/insights não os exibe.
+•	Ação Requerida:
+1.	Modificar o componente React responsável pela página /insights do site público.
+2.	Implementar uma função que faça uma chamada à API do Supabase para buscar todos os registros da tabela blog_posts onde o status seja igual a 'published'.
+3.	Na página, renderizar uma lista de "cards" para cada Insight retornado, exibindo o title, summary, author, e published_at.
+4.	Cada card de Insight deve ser um link que leva a uma página de detalhe, usando uma rota dinâmica (ex: /insights/o-titulo-do-post-ou-id). Essa página de detalhe, por sua vez, deve buscar e exibir o content completo do respectivo Insight.
+Ticket 2: Corrigir Rota 404 para a Seção "Páginas"
+•	Problema: Acessar a seção "Páginas" (/admin/pages) no menu do portal administrativo resulta em um erro 404.
+•	Ação Requerida:
+1.	Verificar o arquivo de roteamento do aplicativo admin (provavelmente App.tsx).
+2.	Criar a rota /admin/pages e associá-la a um novo componente React, por exemplo, src/pages/admin/Pages.tsx.
+3.	Implementar o componente Pages.tsx. Para esta primeira versão, ele pode ser uma página simples com um título "Gerenciar Páginas" e uma mensagem "Funcionalidade em desenvolvimento". O objetivo é eliminar o erro 404.
+Ticket 3: Corrigir Rota 404 para a Seção "Equipe"
+•	Problema: Acessar a seção "Equipe" (/admin/users ou /admin/equipe) no menu resulta em um erro 404.
+•	Ação Requerida:
+1.	Similar ao Ticket 2, verificar o arquivo de roteamento.
+2.	Criar a rota correspondente e associá-la a um novo componente, por exemplo, src/pages/admin/Equipe.tsx.
+3.	Implementar o componente Equipe.tsx com, no mínimo, um título "Gerenciar Equipe" para validar que a rota está funcionando.
+________________________________________
+Este prompt cobre todas as suas solicitações de forma clara e técnica. Ele dá ao seu desenvolvedor um roteiro exato do que precisa ser feito, por que precisa ser feito, e como deve ser implementado.
+
