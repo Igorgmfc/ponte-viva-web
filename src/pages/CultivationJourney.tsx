@@ -36,4 +36,4 @@ const CultivationJourney = () => {
   );
 };
 
-export default CultivationJourney;onJourney;
+export default CultivationJourney;
