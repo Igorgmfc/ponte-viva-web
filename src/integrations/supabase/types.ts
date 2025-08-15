@@ -109,6 +109,7 @@ export type Database = {
           name: string
           notes: string | null
           organization: string | null
+          phone: string | null
           status: string
           updated_at: string | null
         }
@@ -120,6 +121,7 @@ export type Database = {
           name: string
           notes?: string | null
           organization?: string | null
+          phone?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -131,6 +133,7 @@ export type Database = {
           name?: string
           notes?: string | null
           organization?: string | null
+          phone?: string | null
           status?: string
           updated_at?: string | null
         }
