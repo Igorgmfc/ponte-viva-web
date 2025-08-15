@@ -1,13 +1,21 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { CheckCircle, Clock, Target, Users, FileText } from "lucide-react";
 
 const DiagnosisJourney = () => {
+  const seoData = {
+    title: 'Diagnóstico de DNA Organizacional - Estratégia Viva',
+    description: 'Descubra o DNA único da sua organização através do nosso processo de diagnóstico profundo. O primeiro passo para uma transformação autêntica.',
+    url: '/jornadas/diagnostico'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

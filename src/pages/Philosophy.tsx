@@ -1,11 +1,19 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const Philosophy = () => {
+  const seoData = {
+    title: 'Nossa Filosofia - Estratégia Viva',
+    description: 'Acreditamos que as organizações podem ser uma força de regeneração no mundo. Conheça nosso manifesto e os princípios que guiam nosso trabalho.',
+    url: '/filosofia'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

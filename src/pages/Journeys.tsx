@@ -1,13 +1,21 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { CheckCircle, Clock, ArrowRight } from "lucide-react";
 
 const Journeys = () => {
+  const seoData = {
+    title: 'Nossas Jornadas de Transformação - Estratégia Viva',
+    description: 'Descubra nossos três caminhos de transformação organizacional: Diagnóstico de DNA, Arquitetura de Ecossistema e Ciclo de Cultivo.',
+    url: '/jornadas'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

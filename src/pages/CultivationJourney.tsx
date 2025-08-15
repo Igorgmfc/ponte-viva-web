@@ -1,11 +1,19 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const CultivationJourney = () => {
+  const seoData = {
+    title: 'Ciclo de Cultivo - Estratégia Viva',
+    description: 'Parceria estratégica contínua para manter seu ecossistema organizacional próspero e em constante evolução.',
+    url: '/jornadas/cultivo'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

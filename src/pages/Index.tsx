@@ -1,13 +1,16 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Heart, Users, Sprout, Building2 } from "lucide-react";
+import { defaultSEO } from "@/utils/seo";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={defaultSEO} />
       <Header />
       
       <main>

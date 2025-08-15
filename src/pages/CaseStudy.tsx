@@ -1,11 +1,19 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const CaseStudy = () => {
+  const seoData = {
+    title: 'Estudo de Caso - Estratégia Viva',
+    description: 'Conheça como transformamos organizações em ecossistemas prósperos através de casos reais de sucesso.',
+    url: '/estudo-de-caso'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

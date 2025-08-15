@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +10,12 @@ import { handleContactSubmit } from "@/lib/api";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Contact = () => {
+  const seoData = {
+    title: 'Contato - Estratégia Viva',
+    description: 'Entre em contato conosco para uma conversa sobre como podemos ajudar sua organização a florescer como um ecossistema vivo.',
+    url: '/contato'
+  };
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -32,6 +39,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

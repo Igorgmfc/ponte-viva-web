@@ -1,13 +1,21 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { CheckCircle, Clock, Target, Users, Building2, Sprout } from "lucide-react";
 
 const ArchitectureJourney = () => {
+  const seoData = {
+    title: 'Arquitetura de Ecossistema Vivo - Estratégia Viva',
+    description: 'Nossa jornada completa de transformação organizacional. Redesenhe sua organização como um ecossistema vivo, próspero e regenerativo.',
+    url: '/jornadas/arquitetura'
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead data={seoData} />
       <Header />
       
       <main className="py-16">

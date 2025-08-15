@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/admin/ProtectedRoute";
 import Index from "./pages/Index";
@@ -14,7 +15,9 @@ import ArchitectureJourney from "./pages/ArchitectureJourney";
 import CultivationJourney from "./pages/CultivationJourney";
 import CaseStudy from "./pages/CaseStudy";
 import Insights from "./pages/Insights";
+import InsightDetail from "./pages/InsightDetail";
 import Contact from "./pages/Contact";
+import SitemapRoute from "./pages/SitemapRoute";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/Login";
@@ -27,6 +30,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
     <AuthProvider>
     <TooltipProvider>
       <Toaster />
@@ -41,7 +45,9 @@ const App = () => (
           <Route path="/jornadas/cultivo" element={<CultivationJourney />} />
           <Route path="/estudo-de-caso" element={<CaseStudy />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/insights/:id" element={<InsightDetail />} />
           <Route path="/contato" element={<Contact />} />
+          <Route path="/sitemap.xml" element={<SitemapRoute />} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -77,6 +83,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
     </AuthProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 
