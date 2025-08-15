@@ -60,6 +60,7 @@ export const publicAPI = {
     name: string
     email: string
     organization?: string
+    phone?: string
     message: string
   }) {
     const { data, error } = await supabase
@@ -83,6 +84,7 @@ export const handleContactSubmit = async (formData: FormData) => {
     name: formData.get('name') as string,
     email: formData.get('email') as string,
     organization: formData.get('organization') as string || undefined,
+    phone: formData.get('phone') as string || undefined,
     message: formData.get('message') as string,
   }
 
