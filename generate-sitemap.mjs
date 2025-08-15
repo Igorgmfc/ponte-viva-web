@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
-import 'dotenv/config';
+
+// A linha 'import 'dotenv/config';' foi removida.
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
@@ -44,7 +45,6 @@ ${allUrls.map(url => `  <url>
   </url>`).join('\n')}
 </urlset>`;
     
-    // Salva o sitemap diretamente na pasta 'dist' que foi criada pelo build
     fs.writeFileSync(path.resolve(process.cwd(), 'dist/sitemap.xml'), sitemap);
     console.log('✅ Sitemap gerado com sucesso em dist/sitemap.xml!');
   } catch (error) {
